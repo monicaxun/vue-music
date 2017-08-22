@@ -1,22 +1,32 @@
 <template>
-    <div>
-      <ul>
-        <router-link tag="li" class="tab-item" to="/recommend">推荐</router-link>
-        <router-link tag="li" class="tab-item" to="/recommend">歌手</router-link>
-        <router-link tag="li" class="tab-item" to="/recommend">排行</router-link>
-        <router-link tag="li" class="tab-item" to="/recommend">搜索</router-link>
-      </ul>
-    </div>
+  <ul class="tab">
+    <router-link tag="li" class="tab-item" to="/recommend">推荐</router-link>
+    <router-link tag="li" class="tab-item" to="/singer">歌手</router-link>
+    <router-link tag="li" class="tab-item" to="/rank">排行</router-link>
+    <router-link tag="li" class="tab-item" to="/search">搜索</router-link>
+  </ul>
 </template>
 
 <script>
   export default {}
 </script>
 
-<style scoped rel="stylesheet/scss">
-  ul {
+<style lang="scss" scoped rel="stylesheet/scss">
+  @import "~common/scss/variables";
+  .tab {
+    display: flex;
+    height: 44px;
+    line-height: 44px;
+    font-size: $font-size-medium;
     .tab-item {
-      display: inline-block;
+      flex: 1;
+      text-align: center;
+      color: $color-text;
+
+      &.router-link-active {
+        color: $color-theme;
+        border-bottom: $color-theme 2px solid;
+      }
     }
   }
 
