@@ -17,7 +17,7 @@
   import {ERR_OK} from 'api/config'
   import {getRecommend} from 'api/recommend'
   import Slider from 'base/slider/slider'
-//  import BScroll from 'better-scroll'
+
   export default {
     data () {
       return {

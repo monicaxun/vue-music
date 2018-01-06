@@ -12,6 +12,7 @@
 
   export default {
     props: {
+      dots: [],
       loop: {
         type: Boolean,
         default: true
@@ -28,6 +29,7 @@
     mounted () {
       setTimeout(() => {
         this._setSliderWidth()
+        this._initDots()
         this._initSlider()
       }, 200)
     },
@@ -46,10 +48,9 @@
         }
 
         if (this.loop) {
-          console.log(width)
-
           width += 2 * sliderWidth
         }
+
         this.$refs.sliderGroup.style.width = width + 'px'
       },
       _initSlider () {
@@ -57,10 +58,11 @@
           scrollX: true,
           scrollY: false,
           momentum: false,
-          snap: true,
-          snapLoop: this.loop,
-          snapThreshold: 0.3,
-          snapSpeed: 400,
+          snap: {
+            loop: this.loop,
+            threshold: 0.3,
+            speed: 400
+          },
           click: true
         })
       }
