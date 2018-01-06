@@ -1,9 +1,12 @@
 <template>
-    <div class="slider" ref="slider">
-      <div class="slider-group" ref="sliderGroup">
-        <slot></slot>
-      </div>
+  <div class="slider" ref="slider">
+    <div class="slider-group" ref="sliderGroup">
+      <slot></slot>
     </div>
+    <div class="dots">
+      <span class="dot" v-for="(item, index) in dots" :class="{ active : currentPageIndex === index }"></span>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -11,8 +14,13 @@
   import {addClass} from 'common/js/dom'
 
   export default {
+    data() {
+      return {
+        dots: [],
+        currentPageIndex: 0
+      }
+    },
     props: {
-      dots: [],
       loop: {
         type: Boolean,
         default: true
@@ -31,10 +39,22 @@
         this._setSliderWidth()
         this._initDots()
         this._initSlider()
-      }, 200)
+
+        if (this.autoPlay) {
+          this._play()
+        }
+      }, 20)
+
+      window.addEventListener('resize', () => {
+        if (!this.slider) {
+          return
+        }
+        this._setSliderWidth(true)
+        this.slider.refresh()
+      })
     },
     methods: {
-      _setSliderWidth () {
+      _setSliderWidth (isResize) {
         this.children = this.$refs.sliderGroup.children
 
         let width = 0
@@ -47,7 +67,7 @@
           width += sliderWidth
         }
 
-        if (this.loop) {
+        if (this.loop && !isResize) {
           width += 2 * sliderWidth
         }
 
@@ -65,12 +85,38 @@
           },
           click: true
         })
+
+        this.slider.on('scrollEnd', () => {
+          let pageIndex = this.slider.getCurrentPage().pageX
+
+          if (this.loop) {
+            pageIndex -= 1
+          }
+
+          this.currentPageIndex = pageIndex
+
+          if (this.autoPlay) {
+            clearTimeout(this.timer)
+
+            this._play()
+          }
+        })
+      },
+      _initDots() {
+        this.dots = new Array(this.children.length)
+      },
+      _play() {
+        this.timer = setTimeout(() => {
+          this.slider.next()
+        }, this.interval)
       }
     }
   }
 </script>
 
 <style lang="scss" rel="stylesheet/scss">
+  @import "~common/scss/variables";
+
   .slider {
     min-height: 1px;
     .slider-group {
@@ -91,6 +137,28 @@
         img {
           display: block;
           width: 100%;
+        }
+      }
+    }
+    .dots {
+      position: absolute;
+      right: 0;
+      left: 0;
+      bottom: 12px;
+      transform: translateZ(1px);
+      text-align: center;
+      font-size: 0;
+      .dot {
+        display: inline-block;
+        margin: 0 4px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: $color-light-grey-s;
+        &.active {
+          width: 20px;
+          border-radius: 5px;
+          background: $color-white;
         }
       }
     }
